@@ -116,8 +116,6 @@ export default function Board() {
 
     if (!columnIdToMove) return;
 
-    console.log(taskId, columnIdToMove)
-
     await updateTask(taskId, columnIdToMove, "");
     await fetchColumns();
   };
@@ -125,8 +123,7 @@ export default function Board() {
   return (
     <div className={styles.board}>
       <div className={styles.instructions}>
-        <p>Click to advance a task</p>
-        <p>Right click to go back a task</p>
+        <h2>To-do List</h2>
       </div>
 
       <div className={styles.list}>
