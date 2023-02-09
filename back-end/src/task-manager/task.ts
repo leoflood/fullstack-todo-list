@@ -26,4 +26,8 @@ export class Task {
   setValue(value: string) {
     this._value = value;
   }
+
+  setColumnId(columnId: string) {
+    this._columnId = columnId;
+  }
 }

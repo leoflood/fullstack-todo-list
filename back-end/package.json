@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "start": "nodemon src/app.ts",
+    "dev": "nodemon src/app.ts",
     "test": "jest"
   },
   "dependencies": {
