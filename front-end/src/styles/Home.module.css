@@ -1,0 +1,31 @@
+.main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+}
+
+.board {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.instructions {
+  text-align: center;
+}
+
+.list {
+  display: flex;
+  padding: 10px;
+}
+
+.columnTitle {
+  text-align: center;
+  background-color: #333;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  box-shadow: 2px 2px 2px #ccc;
+}
