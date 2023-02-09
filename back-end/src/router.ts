@@ -15,8 +15,8 @@ export function router(app: Express) {
   });
 
   app.put("/task", (req, res) => {
-    const { taskId, value } = req.body;
-    taskManager.updateTask(taskId, value);
+    const { taskId, columnId, value } = req.body;
+    taskManager.updateTask(taskId, columnId, value);
     res.send(taskManager.columns);
   });
 

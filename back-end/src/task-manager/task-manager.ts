@@ -58,9 +58,21 @@ export class TaskManager {
     return task;
   }
 
-  updateTask(taskId: string, value: string) {
+  updateTask(taskId: string, columnId: string, value: string) {
     const task = this.getTask(taskId);
-    task.setValue(value);
+
+    if (task.columnId !== columnId) {
+      const oldColumn = this.getColumn(task.columnId);
+      oldColumn.deleteTask(taskId);
+
+      const newColumn = this.getColumn(columnId);
+      task.setColumnId(columnId);
+      newColumn.addTask(task);
+    }
+
+    
+
+    if (value) task.setValue(value);
   }
 
   deleteTask(taskId: string) {

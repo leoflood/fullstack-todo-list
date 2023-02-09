@@ -29,3 +29,12 @@
   border-radius: 5px;
   box-shadow: 2px 2px 2px #ccc;
 }
+
+.task {
+  position: relative;
+}
+
+.taskActions {
+  display: flex;
+  justify-content: space-between;
+}

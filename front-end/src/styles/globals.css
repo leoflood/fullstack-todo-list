@@ -114,12 +114,16 @@ li {
   margin-bottom: 10px;
   border-radius: 5px;
   box-shadow: 2px 2px 2px #ccc;
-  width: 120px;
+  width: 150px;
   word-wrap: break-word;
 }
 
 li input {
   width: 100%;
+}
+
+button {
+  cursor: pointer;
 }
 
 @media (prefers-color-scheme: dark) {
