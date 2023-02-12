@@ -1,4 +1,5 @@
 # CRUD To-Do List
+This is a simple To-do list project when the user can create, read, update and delete tasks.
 
 ## Docker Installation
 This project uses a docker-compose file, you can do:
