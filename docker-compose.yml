@@ -1,0 +1,17 @@
+version: '3'
+services:
+
+  todo-list-back-end:
+    build: ./back-end
+    container_name: todo-list-back-end
+    ports:
+      - 4000:4000
+
+  todo-list-front-end:
+    build: ./front-end
+    container_name: todo-list-front-end
+    ports:
+      - 3000:3000
+    links:
+      - todo-list-back-end
+      

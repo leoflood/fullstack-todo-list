@@ -1,8 +1,17 @@
 # CRUD To-Do List
 
-## Installation
+## Docker Installation
+This project uses a docker-compose file, you can do:
 
-This project uses yarn, if you do not have it please do
+```bash
+  docker-compose up
+```
+
+and the application will be running.
+
+## Manual Installation
+
+This project uses yarn, if you do not have it please do:
 
 ```bash
   npm install --global yarn
@@ -12,7 +21,7 @@ This application has a back-end made in Node JS and a front-end made in React, y
 
 ### Back End
 
-Install and run the Back End with yarn
+Install and run the Back End with yarn:
 
 ```bash
   cd back-end
@@ -22,7 +31,7 @@ Install and run the Back End with yarn
 
 ### Front End
 
-Install and run the Front End with yarn
+Install and run the Front End with yarn:
 
 ```bash
   cd front-end

@@ -15,6 +15,7 @@ interface IColumn {
 
 export default function Board() {
   const [data, setData] = useState<IColumn[]>([]);
+  const [loading, setLoading] = useState(true);
   const [taskToEdit, setTaskToEdit] = useState("");
   const [taskToEditValue, setTaskToEditValue] = useState("");
 
@@ -23,14 +24,14 @@ export default function Board() {
   );
 
   useEffect(() => {
-    getColumns().then((columns) => {
-      setData(columns);
-    });
+    fetchColumns();
   }, []);
 
   const fetchColumns = async () => {
+    setLoading(true);
     const columns = await getColumns();
     setData(columns);
+    setLoading(false);
   };
 
   const onTaskToAddKeyPress = (e: any, columnId: string) => {
@@ -119,6 +120,8 @@ export default function Board() {
     await updateTask(taskId, columnIdToMove, "");
     await fetchColumns();
   };
+
+  if (loading) return <div>Loading...</div>
 
   return (
     <div className={styles.board}>
