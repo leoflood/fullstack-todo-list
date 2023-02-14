@@ -1,22 +1,29 @@
-import { createTask, deleteTask, getColumns, updateTask } from "@/api";
+import {
+  createTask,
+  deleteTask,
+  getColumns,
+  getTasks,
+  updateTask,
+} from "@/api";
 import { useEffect, useState } from "react";
 import styles from "@/styles/Home.module.css";
 
 interface ITask {
-  _id: string;
-  _value: string;
+  id: number;
+  taskName: string;
+  columnId: number;
 }
 
 interface IColumn {
-  _id: string;
-  _value: string;
-  _tasks: ITask[];
+  id: number;
+  columnName: string;
+  tasks?: ITask[];
 }
 
 export default function Board() {
   const [data, setData] = useState<IColumn[]>([]);
   const [loading, setLoading] = useState(true);
-  const [taskToEdit, setTaskToEdit] = useState("");
+  const [taskToEdit, setTaskToEdit] = useState<null | number>(null);
   const [taskToEditValue, setTaskToEditValue] = useState("");
 
   const [taskToAddMap, setTaskToAddMap] = useState<{ [key: string]: string }>(
@@ -24,30 +31,40 @@ export default function Board() {
   );
 
   useEffect(() => {
-    fetchColumns();
+    fetchData();
   }, []);
 
-  const fetchColumns = async () => {
+  const fetchData = async () => {
     setLoading(true);
-    const columns = await getColumns();
+    const [columns, tasks] = await Promise.all([getColumns(), getTasks()]);
+
+    columns.forEach((col: IColumn) => {
+      col.tasks = [];
+      tasks.forEach((tas: ITask) => {
+        if (tas.columnId === col.id && col.tasks) {
+          col.tasks.push(tas);
+        }
+      });
+    });
+
     setData(columns);
     setLoading(false);
   };
 
-  const onTaskToAddKeyPress = (e: any, columnId: string) => {
+  const onTaskToAddKeyPress = (e: any, columnId: number) => {
     if (e.key === "Enter" && taskToAddMap[columnId].length) {
       onCreateTask(taskToAddMap[columnId], columnId);
     }
   };
 
-  const onCreateTask = async (value: string, columnId: string) => {
+  const onCreateTask = async (value: string, columnId: number) => {
     taskToAddMap[columnId] = "";
     setTaskToAddMap({ ...taskToAddMap });
     await createTask(value, columnId);
-    await fetchColumns();
+    await fetchData();
   };
 
-  const onTaskClick = (taskId: string, value: string) => {
+  const onTaskClick = (taskId: number, value: string) => {
     setTaskToEdit(taskId);
     setTaskToEditValue(value);
   };
@@ -58,8 +75,8 @@ export default function Board() {
 
   const onTaskToEditKeyPress = async (
     e: any,
-    columnId: string,
-    taskId: string,
+    columnId: number,
+    taskId: number,
     value: string
   ) => {
     if (e.key !== "Enter") {
@@ -70,28 +87,28 @@ export default function Board() {
       return;
     }
 
-    setTaskToEdit("");
+    setTaskToEdit(null);
     await updateTask(taskId, columnId, value);
-    await fetchColumns();
+    await fetchData();
   };
 
-  const onDeleteTask = async (taskId: string) => {
-    setTaskToEdit("");
+  const onDeleteTask = async (taskId: number) => {
+    setTaskToEdit(null);
     await deleteTask(taskId);
-    await fetchColumns();
+    await fetchData();
   };
 
-  const onTaskToAddChange = (newValue: string, columnId: string) => {
+  const onTaskToAddChange = (newValue: string, columnId: number) => {
     taskToAddMap[columnId] = newValue;
     setTaskToAddMap({ ...taskToAddMap });
   };
 
   const onMoveTask = async (
     direction: string,
-    columnId: string,
-    taskId: string
+    columnId: number,
+    taskId: number
   ) => {
-    const column = data.find((c) => c._id === columnId);
+    const column = data.find((c) => c.id === columnId);
 
     if (!column) {
       return;
@@ -104,24 +121,24 @@ export default function Board() {
     switch (direction) {
       case "left": {
         if (columnIndex <= 0) return;
-        columnIdToMove = data[columnIndex - 1]._id;
+        columnIdToMove = data[columnIndex - 1].id;
         break;
       }
 
       case "right": {
         if (columnIndex >= data.length - 1) return;
-        columnIdToMove = data[columnIndex + 1]._id;
+        columnIdToMove = data[columnIndex + 1].id;
         break;
       }
     }
 
     if (!columnIdToMove) return;
 
-    await updateTask(taskId, columnIdToMove, "");
-    await fetchColumns();
+    await updateTask(taskId, columnIdToMove);
+    await fetchData();
   };
 
-  if (loading) return <div>Loading...</div>
+  if (loading) return <div>Loading...</div>;
 
   return (
     <div className={styles.board}>
@@ -131,30 +148,30 @@ export default function Board() {
 
       <div className={styles.list}>
         {data.map((column: IColumn) => (
-          <ul key={column._id}>
-            <li className={styles.columnTitle}>{column._value}</li>
+          <ul className={styles.column} key={column.id}>
+            <li className={styles.columnTitle}>{column.columnName}</li>
 
-            {column._tasks.map((task) =>
-              taskToEdit !== task._id ? (
+            {column.tasks && column.tasks.map((task) =>
+              taskToEdit !== task.id ? (
                 <li
                   className={styles.task}
-                  key={task._id}
-                  onClick={() => onTaskClick(task._id, task._value)}
+                  key={task.id}
+                  onClick={() => onTaskClick(task.id, task.taskName)}
                 >
-                  {task._value}
+                  {task.taskName}
                 </li>
               ) : (
-                <li className={styles.task} key={task._id}>
+                <li className={styles.task} key={task.id}>
                   <input
                     placeholder="Edit task"
                     value={taskToEditValue}
-                    onBlur={() => setTaskToEdit("")}
+                    onBlur={() => setTaskToEdit(null)}
                     onChange={(e) => onTaskValueChange(e.target.value)}
                     onKeyPress={(e) =>
                       onTaskToEditKeyPress(
                         e,
-                        column._id,
-                        task._id,
+                        column.id,
+                        task.id,
                         taskToEditValue
                       )
                     }
@@ -163,20 +180,18 @@ export default function Board() {
                   <div className={styles.taskActions}>
                     <div>
                       <button
-                        onClick={() => onMoveTask("left", column._id, task._id)}
+                        onClick={() => onMoveTask("left", column.id, task.id)}
                       >
                         ←
                       </button>
                       <button
-                        onClick={() =>
-                          onMoveTask("right", column._id, task._id)
-                        }
+                        onClick={() => onMoveTask("right", column.id, task.id)}
                       >
                         →
                       </button>
                     </div>
 
-                    <button onClick={() => onDeleteTask(task._id)}>X</button>
+                    <button onClick={() => onDeleteTask(task.id)}>X</button>
                   </div>
                 </li>
               )
@@ -185,9 +200,9 @@ export default function Board() {
             <li>
               <input
                 placeholder="Add a task"
-                value={taskToAddMap[column._id] || ""}
-                onChange={(e) => onTaskToAddChange(e.target.value, column._id)}
-                onKeyPress={(e) => onTaskToAddKeyPress(e, column._id)}
+                value={taskToAddMap[column.id] || ""}
+                onChange={(e) => onTaskToAddChange(e.target.value, column.id)}
+                onKeyPress={(e) => onTaskToAddKeyPress(e, column.id)}
               />
             </li>
           </ul>
