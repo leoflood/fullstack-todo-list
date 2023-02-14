@@ -1,5 +1,3 @@
-import mysql from "mysql";
-
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
@@ -16,11 +14,6 @@ export interface ITask {
 }
 
 export class DataApi {
-  private con: mysql.Connection;
-
-  constructor(con: mysql.Connection) {
-    this.con = con;
-  }
 
   async getColumns() {
     return new Promise(async (resolve) => {

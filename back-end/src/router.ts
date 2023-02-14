@@ -2,8 +2,8 @@ import { Express } from "express";
 import mysql from "mysql";
 import { DataApi } from "./sql/data-api";
 
-export async function router(app: Express, con: mysql.Connection) {
-  const dataApi = new DataApi(con);
+export async function router(app: Express) {
+  const dataApi = new DataApi();
 
   app.get("/columns", async (req, res) => {
     const columns = await dataApi.getColumns();
