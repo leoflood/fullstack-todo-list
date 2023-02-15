@@ -2,7 +2,7 @@
   "scripts": {
     "dev": "nodemon src/app.ts",
     "test": "jest",
-    "db-setup": "npx prisma migrate dev --name tags-model && ts-node ./prisma/seed.ts"
+    "db-setup": "npx prisma generate --schema=./prisma/schema.prisma && npx prisma migrate dev --name tags-model && ts-node ./prisma/seed.ts"
   },
   "dependencies": {
     "body-parser": "^1.20.1",
