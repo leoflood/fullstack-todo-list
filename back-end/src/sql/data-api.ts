@@ -17,7 +17,7 @@ export class DataApi {
 
   async getColumns() {
     return new Promise(async (resolve) => {
-      const columns = await prisma.todo_columns.findMany();
+      const columns = await prisma.todoColumn.findMany();
 
       resolve(columns);
     });
@@ -25,7 +25,7 @@ export class DataApi {
 
   async getTasks() {
     return new Promise(async (resolve) => {
-      const tasks = await prisma.todo_tasks.findMany({
+      const tasks = await prisma.todoTask.findMany({
         where: {
           deleted: 0,
         },
@@ -37,7 +37,7 @@ export class DataApi {
 
   async createTask(taskName: string, columnId: number) {
     return new Promise(async (resolve) => {
-      const newTask = await prisma.todo_tasks.create({
+      const newTask = await prisma.todoTask.create({
         data: {
           taskName,
           columnId,
@@ -50,7 +50,7 @@ export class DataApi {
 
   async updateTaskName(taskId: number, taskName: string) {
     return new Promise(async (resolve) => {
-      const updatedTask = await prisma.todo_tasks.update({
+      const updatedTask = await prisma.todoTask.update({
         where: {
           id: taskId,
         },
@@ -65,7 +65,7 @@ export class DataApi {
 
   async updateTaskColumnId(taskId: number, columnId: number) {
     return new Promise(async (resolve) => {
-      const updatedTask = await prisma.todo_tasks.update({
+      const updatedTask = await prisma.todoTask.update({
         where: {
           id: taskId,
         },
@@ -80,7 +80,7 @@ export class DataApi {
 
   async deleteTask(taskId: number) {
     return new Promise(async (resolve) => {
-      const deletedTask = await prisma.todo_tasks.delete({
+      const deletedTask = await prisma.todoTask.delete({
         where: {
           id: 1,
         },

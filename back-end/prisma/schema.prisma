@@ -7,12 +7,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model todo_columns {
+model TodoColumn {
   id         Int     @id @default(autoincrement())
   columnName String? @db.VarChar(255)
 }
 
-model todo_tasks {
+model TodoTask {
   id       Int     @id @default(autoincrement())
   taskName String? @db.VarChar(255)
   columnId Int
