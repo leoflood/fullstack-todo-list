@@ -1,28 +1,38 @@
 import { Express } from "express";
-import { TaskManager } from "./task-manager/task-manager";
+import mysql from "mysql";
+import { DataApi } from "./sql/data-api";
 
-const taskManager = new TaskManager();
+export async function router(app: Express) {
+  const dataApi = new DataApi();
 
-export function router(app: Express) {
-  app.get("/columns", (req, res) => {
-    res.send(taskManager.columns);
+  app.get("/columns", async (req, res) => {
+    const columns = await dataApi.getColumns();
+    res.send(columns);
   });
 
-  app.post("/task", (req, res) => {
+  app.get("/tasks", async (req, res) => {
+    const tasks = await dataApi.getTasks();
+    res.send(tasks);
+  });
+
+  app.post("/task", async (req, res) => {
     const { value, columnId } = req.body;
-    taskManager.addTask(value, columnId);
-    res.send(taskManager.columns);
+    await dataApi.createTask(value, columnId);
+    res.send(true);
   });
 
-  app.put("/task", (req, res) => {
+  app.put("/task", async (req, res) => {
     const { taskId, columnId, value } = req.body;
-    taskManager.updateTask(taskId, columnId, value);
-    res.send(taskManager.columns);
+
+    if (columnId) await dataApi.updateTaskColumnId(taskId, columnId);
+    if (value) await dataApi.updateTaskName(taskId, value);
+
+    res.send(true);
   });
 
-  app.delete("/task", (req, res) => {
+  app.delete("/task", async (req, res) => {
     const { taskId } = req.body;
-    taskManager.deleteTask(taskId);
-    res.send(taskManager.columns);
+    await dataApi.deleteTask(taskId);
+    res.send(true);
   });
 }

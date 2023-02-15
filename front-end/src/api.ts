@@ -4,7 +4,11 @@ export function getColumns() {
   return fetch(serverUrl + "/columns").then((res) => res.json());
 }
 
-export function createTask(value: string, columnId: string) {
+export function getTasks() {
+  return fetch(serverUrl + "/tasks").then((res) => res.json());
+}
+
+export function createTask(value: string, columnId: number) {
   return fetch(serverUrl + "/task", {
     method: "POST",
     headers: {
@@ -17,7 +21,7 @@ export function createTask(value: string, columnId: string) {
   }).then((res) => res.json());
 }
 
-export function updateTask(taskId: string, columnId: string, value: string) {
+export function updateTask(taskId: number, columnId: number, value?: string) {
   return fetch(serverUrl + "/task", {
     method: "PUT",
     headers: {
@@ -31,7 +35,7 @@ export function updateTask(taskId: string, columnId: string, value: string) {
   }).then((res) => res.json());
 }
 
-export function deleteTask(taskId: string) {
+export function deleteTask(taskId: number) {
   return fetch(serverUrl + "/task", {
     method: "DELETE",
     headers: {

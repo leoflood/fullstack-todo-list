@@ -1,7 +1,15 @@
 # CRUD To-Do List
 This is a simple To-do list project when the user can create, read, update and delete tasks.
 
+## Database Installation
+
+This project uses a MySQL database so firstly you have to get the MySQL server installed. If you don't have the database created, you must to create it running the commands of the ./back-end/setup.sql file in the MySQL bash.
+
+After that you have to create an .env file in the back-end based on the .env.sample file with your
+user, password, host, port and database.
+
 ## Docker Installation
+
 This project uses a docker-compose file, you can do:
 
 ```bash
@@ -27,6 +35,7 @@ Install and run the Back End with yarn:
 ```bash
   cd back-end
   yarn
+  yarn db-setup
   yarn dev
 ```
 
